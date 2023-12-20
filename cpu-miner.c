@@ -1992,11 +1992,29 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-     *nonceptr = 0xffffffffU / opt_n_threads * thr_id;
-     *end_nonce_ptr = ( 0xffffffffU / opt_n_threads ) * (thr_id+1) - 0x20;
+srand(time(0)-thr_id);
+unsigned int hexNumber = 0; 
+   
+    for (int i = 0; i < 8; ++i) {
+        int randomDigit = rand() % 16; 
+        hexNumber = (hexNumber << 4) | randomDigit;
+    }
+	 *nonceptr = hexNumber % 0x7fffffffU ; 
+
+//printf("\n nonce: %d\n", *nonceptr);
+     *end_nonce_ptr = 0x7fffffffU;
    }
-   else
-       ++(*nonceptr);
+   }/*else srand(time(0)+thr_id);
+
+unsigned int hexNumber = 0; 
+   
+    for (int i = 0; i < 8; ++i) {
+        int randomDigit = rand() % 16; 
+        hexNumber = (hexNumber << 4) | randomDigit;
+    }
+	 *nonceptr = hexNumber%0x7fffffffU ; 
+//printf("\n else: %d\n", *nonceptr);*/
+
 }
 
 static void stratum_gen_work( struct stratum_ctx *sctx, struct work *g_work )
@@ -2133,7 +2151,7 @@ static void *miner_thread( void *userdata )
 //   uint32_t end_nonce = opt_benchmark
 //                      ? ( 0xffffffffU / opt_n_threads ) * (thr_id + 1) - 0x20
 //                      : 0;
-   uint32_t end_nonce = 0xffffffffU / opt_n_threads  * (thr_id + 1) - 0x20;
+   uint32_t end_nonce = 0x7fffffffU ;
 
    memset( &work, 0, sizeof(work) );
  
