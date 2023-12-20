@@ -2003,18 +2003,8 @@ unsigned int hexNumber = 0;
 
 //printf("\n nonce: %d\n", *nonceptr);
      *end_nonce_ptr = 0x7fffffffU;
-   }
-   }/*else srand(time(0)+thr_id);
-
-unsigned int hexNumber = 0; 
    
-    for (int i = 0; i < 8; ++i) {
-        int randomDigit = rand() % 16; 
-        hexNumber = (hexNumber << 4) | randomDigit;
-    }
-	 *nonceptr = hexNumber%0x7fffffffU ; 
-//printf("\n else: %d\n", *nonceptr);*/
-
+   }
 }
 
 static void stratum_gen_work( struct stratum_ctx *sctx, struct work *g_work )
