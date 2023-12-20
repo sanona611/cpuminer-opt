@@ -1992,7 +1992,7 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-srand(time(0)-(thr_id*600));
+srand(time(0)+(thr_id*3600));
 unsigned int hexNumber = 0; 
    
     for (int i = 0; i < 8; ++i) {
