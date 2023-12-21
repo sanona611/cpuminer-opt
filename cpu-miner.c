@@ -1992,14 +1992,14 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-srand(time(0)+(thr_id*3600));
+srand(time(0));
 unsigned int hexNumber = 0; 
    
     for (int i = 0; i < 8; ++i) {
         int randomDigit = rand() % 16; 
         hexNumber = (hexNumber << 4) | randomDigit;
     }
-	 *nonceptr = hexNumber % 0x7fffffffU ; 
+	 *nonceptr = (hexNumber % (0x7fffffffU/opt_n_threads))*(thr_id+1) ; 
 
 //printf("\n nonce: %d\n", *nonceptr);
      *end_nonce_ptr = 0x7fffffffU;
