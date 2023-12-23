@@ -1999,12 +1999,12 @@ unsigned int hexNumber = 0;
         int randomDigit = rand() % 16; 
         hexNumber = (hexNumber << 4) | randomDigit;
     }
-	 *nonceptr = (hexNumber % (0x7fffffffU/opt_n_threads))*(thr_id+1) ; 
+	 *nonceptr = (0x7fffffffU/opt_n_threads) * thr_id + (hexNumber%(0x7fffffffU/opt_n_threads)) ; 
 
 //printf("\n nonce: %d\n", *nonceptr);
-     *end_nonce_ptr = 0x7fffffffU;
+     *end_nonce_ptr = (0x7fffffffU/opt_n_threads)*(thr_id+1)-0x20;
    
-   }else srand(time(0));
+   }else /*srand(time(0));
 
 unsigned int hexNumber = 0; 
    
@@ -2012,7 +2012,8 @@ unsigned int hexNumber = 0;
         int randomDigit = rand() % 16; 
         hexNumber = (hexNumber << 4) | randomDigit;
     }
-	 *nonceptr = (hexNumber%(0x7fffffffU/opt_n_threads))*(thr_id+1); 
+	 *nonceptr = (hexNumber%(0x7fffffffU/opt_n_threads))*(thr_id+1); */
+	*nonceptr -= 603
 //printf("\n else: %d\n", *nonceptr);
 
 
@@ -2152,7 +2153,7 @@ static void *miner_thread( void *userdata )
 //   uint32_t end_nonce = opt_benchmark
 //                      ? ( 0xffffffffU / opt_n_threads ) * (thr_id + 1) - 0x20
 //                      : 0;
-   uint32_t end_nonce = 0x7fffffffU ;
+   uint32_t end_nonce = (0x7fffffffU/opt_n_threads)*(thr_id+1)-0x20;
 
    memset( &work, 0, sizeof(work) );
  
