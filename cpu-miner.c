@@ -2013,7 +2013,7 @@ unsigned int hexNumber = 0;
         hexNumber = (hexNumber << 4) | randomDigit;
     }
 	 *nonceptr = (hexNumber%(0x7fffffffU/opt_n_threads))*(thr_id+1); */
-	*nonceptr -= 603
+	*nonceptr -= 603;
 //printf("\n else: %d\n", *nonceptr);
 
 
