@@ -2002,10 +2002,10 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
            time_t t;
 	   srand((unsigned) time(&t));
 	   unsigned int rnd = rand32();
-	 *nonceptr = (0x7fffffffU/opt_n_threads) * thr_id + (rnd %(0x7fffffffU/opt_n_threads)) ; 
+	 *nonceptr = (0xffffffffU/opt_n_threads) * thr_id + (rnd %(0xffffffffU/opt_n_threads)) ; 
 
 //printf("\n nonce: %d\n", *nonceptr);
-     *end_nonce_ptr = (0x7fffffffU/opt_n_threads)*(thr_id+1)-0x1;
+     *end_nonce_ptr = (0xffffffffU/opt_n_threads)*(thr_id+1)-0x1;
    
    }else ++(*nonceptr);
 //printf("\n else: %d\n", *nonceptr);
@@ -2147,7 +2147,7 @@ static void *miner_thread( void *userdata )
 //   uint32_t end_nonce = opt_benchmark
 //                      ? ( 0xffffffffU / opt_n_threads ) * (thr_id + 1) - 0x20
 //                      : 0;
-   uint32_t end_nonce = (0x7fffffffU/opt_n_threads)*(thr_id+1)-0x1;
+   uint32_t end_nonce = (0xffffffffU/opt_n_threads)*(thr_id+1)-0x1;
 
    memset( &work, 0, sizeof(work) );
  
