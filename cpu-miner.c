@@ -1999,14 +1999,14 @@ uint32_t generate_non_random_value(){
 	return non_random_counter;
 }*/
 
-int generate_random_number(){
+/*int generate_random_number(){
 	struct timespec nano_time;
 	clock_gettime(CLOCK_REALTIME, &nano_time);
 	srand((unsigned int)(nano_time.tv_sec * 1e9 + nano_time.tv_nsec));
 	//int random_number = rand();
 	//printf("nonce: %d\n", random_number );
 	return rand();
-}
+}*/
 
 
 void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
@@ -2025,7 +2025,13 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-	*nonceptr = 32767 * (generate_random_number()%(0xffffffffU/(32767*opt_n_threads))) * (thr_id+1)  + generate_random_number();
+	   srand(time(0));
+		unsigned int x = (rand()+thr_id) & 0xff;
+		x |= (rand() & 0xff) << 8;
+		x |= (rand() & 0xff) << 16;
+		x |= (rand() & 0xff) << 24;
+
+	*nonceptr = 32767 * (x%(0xffffffffU/(32767*opt_n_threads))) * (thr_id+1)  + rand();
  	//printf("\n nonce: %u\n", *nonceptr);
      *end_nonce_ptr = 0xffffffffU ;
    
