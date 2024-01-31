@@ -2025,7 +2025,7 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-	*nonceptr = 32767*(generate_random_number()*((thr_id+1)%4))+generate_random_number();
+	*nonceptr = 32767 * (generate_random_number()%(0xffffffffU/(32767*opt_n_threads))) * (thr_id+1)  + generate_random_number();
  	//printf("\n nonce: %u\n", *nonceptr);
      *end_nonce_ptr = 0xffffffffU ;
    
