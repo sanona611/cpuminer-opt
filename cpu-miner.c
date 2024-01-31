@@ -1975,13 +1975,39 @@ void set_work_data_big_endian( struct work *work )
    for ( int i = 0; i < nonce_index; i++ )
         be32enc( work->data + i, work->data[i] );
 }
-unsigned int rand32() {
+/*unsigned int rand32() {
      unsigned int result = 0;
      for (int i=0 ; i<32; ++i) {
           result = (result << 1) | (rand() & 1);
      }
      return result;
+}*/
+/*static uint32_t non_random_counter=0;
+//static int calls_counter =0;
+static uint32_t calls_counter_for_reset = 0;
+
+uint32_t generate_non_random_value(){
+	//non_random_counter = (non_random_counter + 1)%32768;
+	//calls_counter++;
+	calls_counter_for_reset++;
+	if(calls_counter_for_reset%opt_n_threads== 0){
+		non_random_counter = (non_random_counter + 1)%131075;
+		//non_random_counter++;
+		calls_counter_for_reset = 0;
+	}
+	
+	return non_random_counter;
+}*/
+
+int generate_random_number(){
+	struct timespec nano_time;
+	clock_gettime(CLOCK_REALTIME, &nano_time);
+	srand((unsigned int)(nano_time.tv_sec * 1e9 + nano_time.tv_nsec));
+	//int random_number = rand();
+	//printf("nonce: %d\n", random_number );
+	return rand();
 }
+
 
 void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
                      uint32_t *end_nonce_ptr )
@@ -1999,18 +2025,12 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-           time_t t;
-	   srand((unsigned) time(&t));
-	   unsigned int rnd = rand32();
-	 *nonceptr = (0xffffffffU/opt_n_threads) * thr_id + (rnd %(0xffffffffU/opt_n_threads)) ; 
-
-//printf("\n nonce: %d\n", *nonceptr);
-     *end_nonce_ptr = (0xffffffffU/opt_n_threads)*(thr_id+1)-0x1;
+	*nonceptr = 32767*(generate_random_number()*((thr_id+1)%4))+generate_random_number();
+ 	//printf("\n nonce: %u\n", *nonceptr);
+     *end_nonce_ptr = 0xffffffffU ;
    
-   }else ++(*nonceptr);
-//printf("\n else: %d\n", *nonceptr);
-
-
+   }else 
+	   ++(*nonceptr);
 }
 
 static void stratum_gen_work( struct stratum_ctx *sctx, struct work *g_work )
