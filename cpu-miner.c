@@ -2173,7 +2173,7 @@ static void *miner_thread( void *userdata )
 //   uint32_t end_nonce = opt_benchmark
 //                      ? ( 0xffffffffU / opt_n_threads ) * (thr_id + 1) - 0x20
 //                      : 0;
-   uint32_t end_nonce = (0xffffffffU/opt_n_threads)*(thr_id+1)-0x1;
+   uint32_t end_nonce = 0xffffffffU ;
 
    memset( &work, 0, sizeof(work) );
  
