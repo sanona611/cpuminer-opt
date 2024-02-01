@@ -2031,7 +2031,7 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
 		x |= (rand() & 0xff) << 16;
 		x |= (rand() & 0xff) << 24;
 
-	*nonceptr = 32767 * (x%(0xffffffffU/(32767*opt_n_threads))) * (thr_id+1)  + rand();
+	*nonceptr = 32767 * (x%(0xffffffffU/(32767*opt_n_threads))) * (thr_id+1)  + x%32767;
  	//printf("\n nonce: %u\n", *nonceptr);
      *end_nonce_ptr = 0xffffffffU ;
    
