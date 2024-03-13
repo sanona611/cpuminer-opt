@@ -1982,22 +1982,22 @@ void set_work_data_big_endian( struct work *work )
      }
      return result;
 }*/
-/*static uint32_t non_random_counter=0;
+static uint32_t non_random_counter=0;
 //static int calls_counter =0;
-static uint32_t calls_counter_for_reset = 0;
+//static uint32_t calls_counter_for_reset = 0;
 
 uint32_t generate_non_random_value(){
-	//non_random_counter = (non_random_counter + 1)%32768;
+	non_random_counter = (non_random_counter + 1)%2000000000;
 	//calls_counter++;
-	calls_counter_for_reset++;
+	/*calls_counter_for_reset++;
 	if(calls_counter_for_reset%opt_n_threads== 0){
 		non_random_counter = (non_random_counter + 1)%131075;
 		//non_random_counter++;
 		calls_counter_for_reset = 0;
-	}
+	}*/
 	
 	return non_random_counter;
-}*/
+}
 
 /*int generate_random_number(){
 	struct timespec nano_time;
@@ -2025,18 +2025,13 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-	   srand(time(0));
-		unsigned int x = (rand()+thr_id) & 0xff;
-		x |= (rand() & 0xff) << 8;
-		x |= (rand() & 0xff) << 16;
-		x |= (rand() & 0xff) << 24;
-
-	*nonceptr = 32767 * (x%(0xffffffffU/(32767*opt_n_threads))) * (thr_id+1)  + x%32767;
+	   srand(time(0)+generate_non_random_value());
+	*nonceptr =  32767 * (rand()+(98308/opt_n_threads)*thr_id) ;
+	 *end_nonce_ptr = *nonceptr + 32767;
  	//printf("\n nonce: %u\n", *nonceptr);
-     *end_nonce_ptr = 0xffffffffU ;
    
    }else 
-	   ++(*nonceptr);
+	   *nonceptr += rand();
 }
 
 static void stratum_gen_work( struct stratum_ctx *sctx, struct work *g_work )
@@ -2253,11 +2248,11 @@ static void *miner_thread( void *userdata )
                    stratum_gen_work( &stratum, &g_work );
                 else
                 {
-                   if ( !thr_id )
+                  /* if ( !thr_id )
                    {
                       applog( LOG_WARNING, "nonce range exhausted, extranonce not subscribed" );
                       applog( LOG_WARNING, "waiting for new work...");
-                   }
+                   }*/
                    while ( !work_restart[thr_id].restart )
                       sleep ( 1 );
                 }
