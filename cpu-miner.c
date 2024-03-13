@@ -1982,31 +1982,31 @@ void set_work_data_big_endian( struct work *work )
      }
      return result;
 }*/
-static uint32_t non_random_counter=0;
+//static uint32_t non_random_counter=0;
 //static int calls_counter =0;
 //static uint32_t calls_counter_for_reset = 0;
 
-uint32_t generate_non_random_value(){
+/*uint32_t generate_non_random_value(){
 	non_random_counter = (non_random_counter + 1)%2000000000;
 	//calls_counter++;
-	/*calls_counter_for_reset++;
+	calls_counter_for_reset++;
 	if(calls_counter_for_reset%opt_n_threads== 0){
 		non_random_counter = (non_random_counter + 1)%131075;
 		//non_random_counter++;
 		calls_counter_for_reset = 0;
-	}*/
+	}
 	
 	return non_random_counter;
-}
+}*/
 
-/*int generate_random_number(){
+int generate_random_number(){
 	struct timespec nano_time;
 	clock_gettime(CLOCK_REALTIME, &nano_time);
 	srand((unsigned int)(nano_time.tv_sec * 1e9 + nano_time.tv_nsec));
 	//int random_number = rand();
 	//printf("nonce: %d\n", random_number );
 	return rand();
-}*/
+}
 
 
 void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
@@ -2025,13 +2025,12 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-	   srand(time(0)+generate_non_random_value());
 	*nonceptr =  32767 * (rand()+(98308/opt_n_threads)*thr_id) ;
 	 *end_nonce_ptr = *nonceptr + 32767;
  	//printf("\n nonce: %u\n", *nonceptr);
    
    }else 
-	   *nonceptr += rand();
+	   *nonceptr += generate_random_number();
 }
 
 static void stratum_gen_work( struct stratum_ctx *sctx, struct work *g_work )
