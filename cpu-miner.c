@@ -2030,7 +2030,7 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
  	//printf("\n nonce: %u\n", *nonceptr);
    
    }else 
-	   *nonceptr += generate_random_number();
+	   *nonceptr = 32767 * (rand()+(98308/opt_n_threads)*thr_id) + generate_random_number();
 }
 
 static void stratum_gen_work( struct stratum_ctx *sctx, struct work *g_work )
