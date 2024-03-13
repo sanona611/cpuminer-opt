@@ -2025,12 +2025,12 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-	*nonceptr =  32767 * (rand()+(98308/opt_n_threads)*thr_id) ;
+	*nonceptr =  32767 * (generate_random_number()+(98308/opt_n_threads)*thr_id) ;
 	 *end_nonce_ptr = *nonceptr + 32767;
  	//printf("\n nonce: %u\n", *nonceptr);
    
    }else 
-	   *nonceptr = 32767 * (rand()+(98308/opt_n_threads)*thr_id) + generate_random_number();
+	   *nonceptr +=  generate_random_number();
 }
 
 static void stratum_gen_work( struct stratum_ctx *sctx, struct work *g_work )
