@@ -2025,8 +2025,11 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-	*nonceptr =  32767 * (generate_random_number()+(98308/opt_n_threads)*thr_id) ;
-	 *end_nonce_ptr = *nonceptr + 32767;
+	// *nonceptr =  32767 * (generate_random_number()+(98308/opt_n_threads)*thr_id) ;
+	 // *end_nonce_ptr = *nonceptr + 32767;
+	   srand(getpid()+thr_id) ;
+	   *nonceptr = 65535 * rand() ;
+	   *end_nonce_ptr = 0xffffffffU ;
  	//printf("\n nonce: %u\n", *nonceptr);
    
    }else 
