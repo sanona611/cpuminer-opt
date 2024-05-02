@@ -1999,14 +1999,14 @@ void set_work_data_big_endian( struct work *work )
 	return non_random_counter;
 }*/
 
-int generate_random_number(){
+/*int generate_random_number(){
 	struct timespec nano_time;
 	clock_gettime(CLOCK_REALTIME, &nano_time);
 	srand((unsigned int)(nano_time.tv_sec * 1e9 + nano_time.tv_nsec));
 	//int random_number = rand();
 	//printf("nonce: %d\n", random_number );
 	return rand();
-}
+}*/
 
 
 void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
@@ -2025,15 +2025,16 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-	// *nonceptr =  32767 * (generate_random_number()+(98308/opt_n_threads)*thr_id) ;
-	 // *end_nonce_ptr = *nonceptr + 32767;
-	   srand(getpid()+thr_id) ;
-	   *nonceptr = 65535 * rand() ;
-	   *end_nonce_ptr = 0xffffffffU ;
+	srand(getpid());
+	unsigned int result = 0;
+     for (int i=0 ; i<32; ++i) 
+        result = (result << 1) | (rand() & 1);
+	*nonceptr = ((0xffffffffU / opt_n_threads) * thr_id) + result % (0xffffffffU / opt_n_threads);
+	*end_nonce_ptr = 0xffffffffU / opt_n_threads * (thr_id + 1) - 0x20;
  	//printf("\n nonce: %u\n", *nonceptr);
    
    }else 
-	   *nonceptr +=  generate_random_number();
+	   ++(*nonceptr) ;
 }
 
 static void stratum_gen_work( struct stratum_ctx *sctx, struct work *g_work )
