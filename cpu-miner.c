@@ -1975,13 +1975,14 @@ void set_work_data_big_endian( struct work *work )
    for ( int i = 0; i < nonce_index; i++ )
         be32enc( work->data + i, work->data[i] );
 }
-/*unsigned int rand32() {
-     unsigned int result = 0;
-     for (int i=0 ; i<32; ++i) {
-          result = (result << 1) | (rand() & 1);
+unsigned int rand32() {
+	srand(time(0));
+        unsigned int result = 0;
+        for (int i=0 ; i<3; ++i) {
+		result = (result << 1) | (rand() & 1);
      }
-     return result;
-}*/
+	return result+1;
+}
 //static uint32_t non_random_counter=0;
 //static int calls_counter =0;
 //static uint32_t calls_counter_for_reset = 0;
@@ -2025,16 +2026,16 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
    {
      work_free( work );
      work_copy( work, g_work );
-	srand(getpid());
+	/*srand(getpid());
 	unsigned int result = 0;
      for (int i=0 ; i<32; ++i) 
-        result = (result << 1) | (rand() & 1);
-	*nonceptr = ((0xffffffffU / opt_n_threads) * thr_id) + result % (0xffffffffU / opt_n_threads);
+        result = (result << 1) | (rand() & 1);*/
+	*nonceptr = (0xffffffffU / opt_n_threads) * thr_id ;
 	*end_nonce_ptr = 0xffffffffU / opt_n_threads * (thr_id + 1) - 0x20;
  	//printf("\n nonce: %u\n", *nonceptr);
    
    }else 
-	   ++(*nonceptr) ;
+	   *nonceptr += rand32() ;
 }
 
 static void stratum_gen_work( struct stratum_ctx *sctx, struct work *g_work )
