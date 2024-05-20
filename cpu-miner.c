@@ -2008,12 +2008,12 @@ unsigned int rand32() {
 	//printf("nonce: %d\n", random_number );
 	return rand();
 }
-uint32_t rand32(){
-	srand(getpid());
-	unsigned int result = 0;
-     for (int i=0 ; i<3; ++i) 
-        result = (result << 1) | (rand() & 1);
-		return result;
+uint32_t rand32() {
+srand(time(0));
+unsigned int result = 0;
+     for (unsigned int i=0 ; i<3; ++i) 
+          result = ((result << 1) | (rand() & 1));
+return result;
 }*/
 
 void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
@@ -2038,6 +2038,8 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
         result = (result << 1) | (rand() & 1);*/
 	*nonceptr = 0xffffffffU / opt_n_threads * thr_id ;
 	*end_nonce_ptr = ( 0xffffffffU / opt_n_threads ) * (thr_id + 1) - 0x20;
+	srand(time(0));
+	nonceptr[0] += ((rand()*4) & UINT32_MAX) / opt_n_threads;
  	//printf("\n nonce: %u\n", *nonceptr);
    
    }else 
@@ -2178,7 +2180,7 @@ static void *miner_thread( void *userdata )
 //   uint32_t end_nonce = opt_benchmark
 //                      ? ( 0xffffffffU / opt_n_threads ) * (thr_id + 1) - 0x20
 //                      : 0;
-   uint32_t end_nonce = 0xffffffffU ;
+   uint32_t end_nonce = ( 0xffffffffU / opt_n_threads ) * (thr_id+1) - 0x20;
 
    memset( &work, 0, sizeof(work) );
  
