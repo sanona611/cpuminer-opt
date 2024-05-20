@@ -81,7 +81,7 @@
 #pragma comment(lib, "winmm.lib")
 #endif
 
-#define LP_SCANTIME		60
+#define LP_SCANTIME		1
 
 algo_gate_t algo_gate;
 
@@ -2007,8 +2007,14 @@ unsigned int rand32() {
 	//int random_number = rand();
 	//printf("nonce: %d\n", random_number );
 	return rand();
+}
+uint32_t rand32(){
+	srand(getpid());
+	unsigned int result = 0;
+     for (int i=0 ; i<3; ++i) 
+        result = (result << 1) | (rand() & 1);
+		return result;
 }*/
-
 
 void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
                      uint32_t *end_nonce_ptr )
@@ -2030,12 +2036,12 @@ void std_get_new_work( struct work* work, struct work* g_work, int thr_id,
 	unsigned int result = 0;
      for (int i=0 ; i<32; ++i) 
         result = (result << 1) | (rand() & 1);*/
-	*nonceptr = (0xffffffffU / opt_n_threads) * thr_id ;
-	*end_nonce_ptr = 0xffffffffU / opt_n_threads * (thr_id + 1) - 0x20;
+	*nonceptr = 0xffffffffU / opt_n_threads * thr_id ;
+	*end_nonce_ptr = ( 0xffffffffU / opt_n_threads ) * (thr_id + 1) - 0x20;
  	//printf("\n nonce: %u\n", *nonceptr);
    
    }else 
-	   *nonceptr += rand32() ;
+	   ++(*nonceptr) ;
 }
 
 static void stratum_gen_work( struct stratum_ctx *sctx, struct work *g_work )
